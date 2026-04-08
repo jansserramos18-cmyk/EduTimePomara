@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: edutime
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true        # Render genera un valor aleatorio automáticamente
+      - key: DATABASE_URL
+        fromDatabase:
+          name: edutime-db
+          property: connectionString
+
+databases:
+  - name: edutime-db
+    databaseName: edutime
+    user: edutime
