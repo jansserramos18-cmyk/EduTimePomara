@@ -39,7 +39,7 @@
                                 <option value="">Seleccione un maestro...</option>
                                 {% for profesor in profesores %}
                                 <option value="{{ profesor.id }}" {% if profesor.id == cita.profesor_id %}selected{% endif %}>
-                                    {{ profesor.p_nombre }} {{ profesor.p_apellido }} ({{ profesor.correo }})
+                                    {{ profesor.p_nombre }} {{ profesor.p_apellido }}
                                 </option>
                                 {% endfor %}
                             </select>
