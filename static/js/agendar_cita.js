@@ -4,7 +4,6 @@ function filtrarMaestros() {
     const fechaSeleccionada = new Date(fechaHoraInput.value);
     
     if (!fechaSeleccionada || isNaN(fechaSeleccionada)) {
-        // Si no hay fecha, mostrar todos
         Array.from(profesorSelect.options).forEach(option => {
             if (option.value) option.style.display = 'block';
         });
@@ -15,7 +14,7 @@ function filtrarMaestros() {
     const diaSeleccionado = diasSemana[fechaSeleccionada.getDay()];
     
     Array.from(profesorSelect.options).forEach(option => {
-        if (!option.value) return; // Skip placeholder
+        if (!option.value) return; 
         const diasDisponibles = option.getAttribute('data-dias').split(',');
         if (diasDisponibles.includes(diaSeleccionado)) {
             option.style.display = 'block';
@@ -24,7 +23,7 @@ function filtrarMaestros() {
         }
     });
     
-    // Reset selection if current is hidden
+
     if (profesorSelect.selectedOptions[0] && profesorSelect.selectedOptions[0].style.display === 'none') {
         profesorSelect.selectedIndex = 0;
     }
