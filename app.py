@@ -307,7 +307,24 @@ def dashboard_superusuario():
             db.session.rollback()
             flash(f"Error al registrar: {e}", "danger")
 
-    return render_template('dashboard_superusuario.html')
+    usuarios = Usuario.query.all()
+    maestros = Profesor.query.all()
+    citas = Cita.query.order_by(Cita.fecha_hora.desc()).all()
+    
+    total_usuarios = len(usuarios)
+    total_maestros = len(maestros)
+    total_citas = len(citas)
+    
+    return render_template(
+        'dashboard_superusuario.html',
+        usuarios=usuarios,
+        maestros=maestros,
+        citas=citas,
+        total_usuarios=total_usuarios,
+        total_maestros=total_maestros,
+        total_citas=total_citas,
+        ahora=datetime.now()
+    )
     
 
 @app.route('/agendar_cita', methods=['GET', 'POST'])
@@ -419,6 +436,40 @@ def cancelar_cita_superusuario(cita_id):
         db.session.rollback()
         flash(f"Error al cancelar: {e}", "danger")
 
+    return redirect(url_for('dashboard_superusuario'))
+
+
+@app.route('/eliminar_usuario/<int:usuario_id>', methods=['POST'])
+def eliminar_usuario(usuario_id):
+    if not session.get('is_superuser'):
+        return redirect(url_for('home'))
+    
+    usuario = Usuario.query.get_or_404(usuario_id)
+    try:
+        Cita.query.filter_by(usuario_id=usuario.id).delete()
+        db.session.delete(usuario)
+        db.session.commit()
+        flash("Usuario eliminado exitosamente.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al eliminar usuario: {e}", "danger")
+    return redirect(url_for('dashboard_superusuario'))
+
+
+@app.route('/eliminar_profesor/<int:profesor_id>', methods=['POST'])
+def eliminar_profesor(profesor_id):
+    if not session.get('is_superuser'):
+        return redirect(url_for('home'))
+    
+    maestro = Profesor.query.get_or_404(profesor_id)
+    try:
+        Cita.query.filter_by(profesor_id=maestro.id).delete()
+        db.session.delete(maestro)
+        db.session.commit()
+        flash("Maestro eliminado exitosamente.", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error al eliminar maestro: {e}", "danger")
     return redirect(url_for('dashboard_superusuario'))
 
 
@@ -608,3 +659,4 @@ def dashboard_maestro():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+
