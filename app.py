@@ -7,22 +7,13 @@ from datetime import datetime
 
 app = Flask(__name__, template_folder='TEMPLATES')
 
-# ── Configuración ──────────────────────────────────────────────────────────────
-# En Render, define estas variables de entorno en el panel "Environment":
-#   SECRET_KEY     → una cadena larga y aleatoria
-#   DATABASE_URL   → tu URL de PostgreSQL (Render la provee automáticamente
-#                    si añades una base de datos PostgreSQL al servicio)
-#
-# Si no defines DATABASE_URL se usará SQLite como respaldo local (solo para
-# desarrollo; en Render el sistema de archivos es efímero).
-
 app.config['SECRET_KEY'] = os.environ.get(
     'SECRET_KEY',
-    'cambia-esto-en-produccion'   # valor por defecto SOLO para desarrollo
+    'cambia-esto-en-produccion'  
 )
 
 database_url = os.environ.get('DATABASE_URL', 'sqlite:///EduTime.db')
-# Render devuelve URLs con el prefijo "postgres://"; SQLAlchemy necesita "postgresql://"
+
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
@@ -613,6 +604,5 @@ def dashboard_maestro():
     return render_template('dashboard_maestro.html', nombre=session.get('nombre'), citas=citas, ahora=datetime.now())
 
 
-# ── Punto de entrada ───────────────────────────────────────────────────────────
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
