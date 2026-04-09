@@ -5,7 +5,7 @@ from Models import db, Usuario, Profesor, Superusuario, Cita
 from sqlalchemy import or_
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='TEMPLATES')
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 # En Render, define estas variables de entorno en el panel "Environment":
