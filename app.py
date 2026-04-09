@@ -256,6 +256,8 @@ def dashboard_usuario():
     return render_template('dashboard_usuario.html', nombre=session.get('nombre'), citas=citas, ahora=datetime.now())
 
 
+
+
 @app.route('/dashboard_superusuario', methods=['GET', 'POST'])
 def dashboard_superusuario():
     if 'superuser_id' not in session:
@@ -305,8 +307,27 @@ def dashboard_superusuario():
             db.session.rollback()
             flash(f"Error al registrar: {e}", "danger")
 
-    return render_template('dashboard_superusuario.html')
 
+    lista_usuarios = Usuarios.query.all()
+    lista_maestros = Profesor.query.all()
+    lista_citas = Cita.query.all()
+
+
+    total_u = len(lista_usuarios)
+    total_m = len(lista_maestros)
+    total_c = len(lista_citas)
+
+    return render_template(
+        'dashboard_superusuario.html',
+        usuarios=lista_usuarios,
+        maestros=lista_maestros,
+        citas=lista_citas,
+        total_usuarios=total_u,
+        total_maestros=total_m,
+        total_citas=total_c,
+        ahora=datetime.now()
+    )
+    
 
 @app.route('/agendar_cita', methods=['GET', 'POST'])
 def agendar_cita():
